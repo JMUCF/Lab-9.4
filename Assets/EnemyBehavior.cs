@@ -11,11 +11,15 @@ public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField] protected float shapeSize;
 
-    private void OnValidate()
+    private void Awake()
     {
-        transform.localScale = new Vector3(shapeSize + 1, shapeSize + 1, shapeSize + 1);
+        shapeSize = 1f;
     }
 
+    private void OnValidate()
+    {
+        transform.localScale = new Vector3(shapeSize, shapeSize, shapeSize);
+    }
 }
 
 [CustomEditor(typeof(EnemyBehaviour)), CanEditMultipleObjects]
@@ -23,10 +27,22 @@ public class EnemyBehaviourEditor : Editor
 {
     private bool cubesEnabled = true;
     private bool spheresEnabled = true;
+    private SerializedProperty shapeSizeProperty;
+
+    private void OnEnable()
+    {
+        shapeSizeProperty = serializedObject.FindProperty("shapeSize");
+    }
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
+
+        if (shapeSizeProperty.floatValue < 0)
+            EditorGUILayout.HelpBox("Size cannot be less than 0!", MessageType.Warning);
+
+        else if(shapeSizeProperty.floatValue > 2)
+            EditorGUILayout.HelpBox("Size cannot be greater than 2!", MessageType.Warning);
 
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Select all Cubes"))
