@@ -11,6 +11,11 @@ public class EnemyBehaviour : MonoBehaviour
 {
     [SerializeField] protected float shapeSize;
 
+    private void OnValidate()
+    {
+        transform.localScale = new Vector3(shapeSize + 1, shapeSize + 1, shapeSize + 1);
+    }
+
 }
 
 [CustomEditor(typeof(EnemyBehaviour)), CanEditMultipleObjects]
@@ -18,7 +23,6 @@ public class EnemyBehaviourEditor : Editor
 {
     private bool cubesEnabled = true;
     private bool spheresEnabled = true;
-
 
     public override void OnInspectorGUI()
     {
