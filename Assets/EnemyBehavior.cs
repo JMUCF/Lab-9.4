@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -8,39 +9,72 @@ using UnityEngine.EventSystems;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-    public int size;
+    [SerializeField] protected float shapeSize;
 
 }
 
 [CustomEditor(typeof(EnemyBehaviour)), CanEditMultipleObjects]
 public class EnemyBehaviourEditor : Editor
 {
+
+
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Select all enemies"))
+       /* using (var changeScope = new EditorGUI.ChangeCheckScope())
         {
-            var allEnemyBehaviour = GameObject.FindObjectsOfType
-           <EnemyBehaviour>();
+            var temp = EditorGUILayout.Slider("Size", shapeSize, 0, 10);
+            if (changeScope.changed)
+            {
+                shapeSize.floatValue = temp;
+            }
+        }*/
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Select all Cubes"))
+        {
+            var allEnemyBehaviour = GameObject.FindGameObjectsWithTag("Cube");
+            var allEnemyGameObjects = allEnemyBehaviour
+            .Select(enemy => enemy.gameObject)
+            .ToArray();
+            Selection.objects = allEnemyGameObjects;
+        }
+        if (GUILayout.Button("Select all Spheres"))
+        {
+            var allEnemyBehaviour = GameObject.FindGameObjectsWithTag("Sphere");
             var allEnemyGameObjects = allEnemyBehaviour
             .Select(enemy => enemy.gameObject)
             .ToArray();
             Selection.objects = allEnemyGameObjects;
         }
 
-        if(GUILayout.Button("Clear Selection"))
+        if (GUILayout.Button("Clear Selection"))
         {
             Selection.objects = null;
         }
-        EditorGUILayout.EndHorizontal();
-        if (GUILayout.Button("Disable/Enable all enemy", GUILayout.Height(100)))
+        EditorGUILayout.EndHorizontal();   
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Disable/Enable Cubes", GUILayout.Height(50)))
         {
             foreach (var enemy in GameObject.FindObjectsOfType<EnemyBehaviour>(true))
             {
-                Undo.RecordObject(enemy.gameObject, "Disable/Enable enemy");
-                enemy.gameObject.SetActive(!enemy.gameObject.activeSelf);
+                if (enemy.CompareTag("Cube"))
+                {
+                    Undo.RecordObject(enemy.gameObject, "Disable/Enable Cubes");
+                    enemy.gameObject.SetActive(!enemy.gameObject.activeSelf);
+                }
             }
         }
+        if (GUILayout.Button("Disable/Enable Spheres", GUILayout.Height(50)))
+        {
+            foreach (var enemy in GameObject.FindObjectsOfType<EnemyBehaviour>(true))
+            {
+                if (enemy.CompareTag("Sphere"))
+                {
+                    Undo.RecordObject(enemy.gameObject, "Disable/Enable Spheres");
+                    enemy.gameObject.SetActive(!enemy.gameObject.activeSelf);
+                }
+            }
+        }
+        EditorGUILayout.EndHorizontal();
     }
 }
