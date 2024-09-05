@@ -16,19 +16,14 @@ public class EnemyBehaviour : MonoBehaviour
 [CustomEditor(typeof(EnemyBehaviour)), CanEditMultipleObjects]
 public class EnemyBehaviourEditor : Editor
 {
+    private bool cubesEnabled = true;
+    private bool spheresEnabled = true;
 
 
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-       /* using (var changeScope = new EditorGUI.ChangeCheckScope())
-        {
-            var temp = EditorGUILayout.Slider("Size", shapeSize, 0, 10);
-            if (changeScope.changed)
-            {
-                shapeSize.floatValue = temp;
-            }
-        }*/
+
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Select all Cubes"))
         {
@@ -51,8 +46,16 @@ public class EnemyBehaviourEditor : Editor
         {
             Selection.objects = null;
         }
-        EditorGUILayout.EndHorizontal();   
+        EditorGUILayout.EndHorizontal();
+
+
         EditorGUILayout.BeginHorizontal();
+
+        if(cubesEnabled)
+            GUI.backgroundColor = UnityEngine.Color.green;
+        else if(!cubesEnabled)
+            GUI.backgroundColor = UnityEngine.Color.red;
+            
         if (GUILayout.Button("Disable/Enable Cubes", GUILayout.Height(50)))
         {
             foreach (var enemy in GameObject.FindObjectsOfType<EnemyBehaviour>(true))
@@ -63,7 +66,14 @@ public class EnemyBehaviourEditor : Editor
                     enemy.gameObject.SetActive(!enemy.gameObject.activeSelf);
                 }
             }
+            cubesEnabled = !cubesEnabled;
         }
+
+        if(spheresEnabled)
+            GUI.backgroundColor = UnityEngine.Color.green;
+        else if(!spheresEnabled)
+            GUI.backgroundColor = UnityEngine.Color.red;
+
         if (GUILayout.Button("Disable/Enable Spheres", GUILayout.Height(50)))
         {
             foreach (var enemy in GameObject.FindObjectsOfType<EnemyBehaviour>(true))
@@ -74,6 +84,7 @@ public class EnemyBehaviourEditor : Editor
                     enemy.gameObject.SetActive(!enemy.gameObject.activeSelf);
                 }
             }
+            spheresEnabled = !spheresEnabled;
         }
         EditorGUILayout.EndHorizontal();
     }
